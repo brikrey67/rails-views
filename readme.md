@@ -16,7 +16,7 @@ In our introduction to Rails, we got a quick overview of how Rails' MVC architec
 In this lesson, we'll go more in depth into the inner workings of a Rails App, exploring the pieces involved in a request-response lifecycle.
 
 **(ST-WG)** As a quick review, Why is the MVC structure so important?
----
+
 
 > Interesting to note, the early MVC architects layed the foundational building blocks paving the way for the launch of GUI programming: [MVC History](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller#History)
 
@@ -33,6 +33,7 @@ Read Parts 1-3: http://guides.rubyonrails.org/action_controller_overview.html
 ### Turn & Talk (5 / 15)
 
 With a partner, discuss:
+
 1. What is the role of a controller in a Rails application?
 2. What are the conventions for naming Rails controllers?
 3. What are the benefits following the 'Rails Way'?
