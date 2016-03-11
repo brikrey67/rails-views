@@ -254,33 +254,41 @@ Now when we visit `/artists` in the browser, we see a list (index) of all artist
 - Define `show`, and `new` controller actions for `artists`
 - Create `show`, and `new` views for `artists`
 - Display relevant info for an `artist` when you visit their `show` page
-- When you visit the `new` page, the relevant form should be displayed
-- Don't worry about submitting the form just yet
+- When you visit the `new` page, you should see a header with `New Artist` as text for your html
+
+If you finish early:
+- Research Rails `form for` helper method and think about how you would include a form to get user input necessary to create a new artist instance and have it persist . What happens within Rails when we hit submit on the form?
 
 ## WE-DO: Artists Create Action (20 / 105)
 
-So at this point we have a way to see all artists, view info about a specific artist, as well as see a form to add a new artist.
+So at this point we have a way to see all artists, view info about a specific artist. Let's continue on by adding a form for the user to add their own artists to our application.
 
-<!-- TODO: add section intro-ing forms  -->
+In Rails, we have access to a variety of helper methods to erase the pain of having to writing repetitive boilerplate `html` code.
 
-```rb
-<form action="/artists" method="post" >
-  <label for="name">Name:</label>
-  <input name="name">
+This seems like a great time to utilize Rails `form_for` [helper method](http://guides.rubyonrails.org/form_helpers.html#dealing-with-model-objects):
 
-  <label for="photo_url">Photo URL:</label>
-  <input name="photo_url">
+```
+<%= form_for @artist do |f| %>
+  <%= f.label :name %>
+  <%= f.text_field :name %>
 
-  <label for="nationality">Nationality:</label>
-  <input name="nationality">
+  <%= f.label :nationality %>
+  <%= f.text_field :nationality %>
 
-  <input type="submit" value="Create">
-</form>
+  <%= f.label :photo_url %>
+  <%= f.text_field :photo_url %>
+
+  <%= f.submit "Create" %>
+<% end %>
 ```
 
-But what happens when we try to submit this form?
+Here, we are essentially saying we want a form that will result in the creation of a new instance, in this case `@artist`. In the form body, we just have to make sure that our fields match our Model's attributes and we should be good to go.
 
-If we were looking in our browser, we would get our old friend `unkown action` error, saying:
+Basically, this helper with compile down to html, and the Rails will fill in the appropriate information particular to our app.
+
+Great, but what happens when we try to submit this form?
+
+If we were looking in our browser, we would get our old friend `unknown action` error, saying:
 `The action 'create' could not be found for ArtistsController`
 
 Let's write that action for our controller and get this form to work.
@@ -303,24 +311,28 @@ With this action, we want to create an instance using the params the user entere
 
 Rails has variety of ways to map our app's logic navigating a user's request to a response they care about.
 
-<!-- TODO: overview Redirect -->
-The long and short, takes a request, makes a new request back to the browser
+The one way you will use the most often is a `redirect`. Using Rails `redirect_to` helper method, we can take a request from a client, and then without sending a response back right away, we can make a new request back to the browser, which will trigger the response we want.
 
-For example, taking a closer look at the `index` action of our Artists Controller:
+In the example of our `create` action, we are mapping a `POST` request to this action, so all we should do is care about how to process the accompanying data, but we then need to hand off to another action to decide which response to send.
 
-<!-- TODO: Maybe demo delete instead of index  -->
+
+Another way to control what the response will be for a particular request, is to utilize Rails `render` helper method.
+The `render` is responsible for deciding the format of the view, and which template to serve the browser.
+
+For an example, let's take a closer look at the `index` action of our Artists Controller:
 
 ```ruby
 def index
   @artists = Artist.all
 end
 ```
+Given what we just covered with render:
 
-**Question:** How did we see the artists `index` view page, when we went to our index route?
+**Question:** How are we able to see the artists `index` view page, when we went to our index route?
 
 > You'll notice that we're not explicitly telling the application which view file to render.
 
-That's because Rails has implicit rendering. Basically rails is smart enough to know if the `artists` controller action is called `index`, then it will look for the `index` view in the `artists` folder.
+That's because Rails has implicit rendering. Basically Rails is smart enough to know if the `artists` controller action is called `index`, then it will look for the `index` view in the `artists` folder.
 
 You can explicitly change the implicit render by calling the `render` method in the action of a controller. Something like this:
 
@@ -331,43 +343,7 @@ def index
 end
 ```
 
-You could also redirect rather than render. **(ST-WG):** What are the differences between redirecting and rendering?
-
-### Authenticity Tokens
-
-Let's go to our form in our browser at `http:localhost:3000/artists/new` and try to add an artist.
-
-What happens?
-
-```
-# ERROR!
-# ActionController::InvalidAuthenticityToken in ArtistsController#create
-```
-
-What's going on here?
-
-Rails is setup such that it doesn't allow just any parameters to be accompanied by a request.
-
-**Q:** Why should we worry about what else gets passed into our app with any given request?
-> A: Among other things, CSRF, or Cross Sight Request Forgery is a way for malicious parties to use sessions after
-
-How does Rails help us solve this?
-
-Any time a user views a form to create, update or destroy a resource, the rails app creates a random `authenticity_token` and stores it in a session. When the user than submits the form, rails will look for the `authenticity_token` compares it to the one stored in the session, and if they match, allow the request to continue.
-
-If someone was trying to update our database in some way other than our application, it would be denied.
-
-The first thing that I want do is add the authenticity_token in our `new` form.
-
-Add the hidden input field that contains the auth token in `app/views/artists/new.html.erb':
-
-```html
-<form action="/artists" method="post" >
-  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-  ... more form code
-```
-
-Great, so now that we added an random authenticity_token to each request as an extra layer of security, we should be good to go right?!
+**(ST-WG):** What are the differences between redirecting and rendering?
 
 ## Break ( 10 / 120 )
 
@@ -393,37 +369,24 @@ Instead of one argument for each field in a record, `.create` can actually take 
 })
 ```
 
-That by itself doesn't do us any good. But what if we could have our HTML `form` package up all the artist data into one `params` field? Then, we could just use something like:
+But instead of hard-coding these values, we need to get them from the `post` request triggered by the form submission.
 
-```rb
-  @artist = Artist.create!(params[:artist])
+In general, `params` values can come from the **query string of a GET request**, the **form data of a POST request**, or from the **path of the URL**.
+
+In order to access those values from Rails `params`, we just have to treat it like any other hash we want data from.
+
+> [More about Rails' Params](http://stackoverflow.com/questions/6885990/rails-params-explained)
+
+In our `artists` controller, lets place a `binding.pry` in the first line of `create` action so that we can pause our program at that point, and look around to what we have access to in `params`
+
+```ruby
+def create
+  binding.pry
+  @artist = Artist.create!(name: params[:name], nationality: params[:nationality], photo_url: params[:photo_url])
+end
 ```
 
-Change the HTML of your form `app/views/artists/new.html.erb` to this:
-
-```html
-<form action="/artists" method="post" >
-  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
-  <label for="name">Name:</label>
-  <input name="artist[name]">
-
-  <label for="photo_url">Photo URL:</label>
-  <input name="artist[photo_url]">
-
-  <label for="nationality">Nationality:</label>
-  <input name="artist[nationality]">
-
-  <input type="submit" value="Create">
-</form>
-```
-
-It important to notice the input's name space following `artist[attribute]` patterns. This is important for how we can access the arguments passed by the user in the global `params` object.
-
-<!-- TODO: expand on params? -->
-
-[More about Rails' Params](http://stackoverflow.com/questions/6885990/rails-params-explained)
-
-If you submit the form now, and check the console for the value of `params`, you should see something like:
+If you submit the form now, and check your terminal for the value of `params`, you should see something like:
 
 ```
 {
@@ -514,14 +477,14 @@ Great, now we're protected!
 
 ## Closing (5 / 150)
 
-Who can remind us of the importance of a controller?
-How does the view access data?
-What is the difference between render and redirect?
-How does strong params protect us from malicious input?
+- Who can remind us of the importance of a controller?
+- How does the view access data?
+- What is the difference between render and redirect?
+- How does strong params protect us from malicious input?
 
 ## Homework
 
-[Scribble](http://github.com/ga-wdi-exercises/scibble)) - you're going to get a lot of practice with Rails by building your first full CRUD app - your own blog!
+[Scribble](http://github.com/ga-wdi-exercises/scibble) - you're going to get a lot of practice with Rails by building your first full CRUD app - your own blog!
 
 ## Resources
 - [Rails Guides: Controllers](http://guides.rubyonrails.org/action_controller_overview.html)
