@@ -63,9 +63,11 @@ Let's dive into an example, and see MVC in action by writing some Rails code.
 
 ## Set-Up (5 / 30)
 
-This lesson will build off of the completed work you will do in the Models and Migrations lesson, so just know we will not be going in depth into the database migrations or have to write any new Model code.
+The starter code for this lesson already has all the Active Record components completed, no need to add anything there, you will be building that section from scratch in another class.
 
 To get started, clone down the following repo:
+
+**Note**: If you have trouble setting up, please "#SlackTheBack"
 
 ```bash
 git clone git@github.com:ga-wdi-exercises/tunr_rails_models_and_migrations.git
@@ -76,21 +78,27 @@ git checkout -b inclass
 After you start working on a new branch, from the terminal run:
 ```
 bundle install
+rake db:drop
 rake db:create
 rake db:seed
 ```
 
 > Postgres troubles? Is your blue elephant running?
 
-Here, we are just installing our app's dependencies, and running the setup for our app's database locally.
+Here, we are just installing our app's dependencies, and running the set up for our app's database locally.
 
 To test that it works, try starting the server:
 
 ```
 rails s
 ```
+
 Then in your browser, navigate to the `http:localhost:3000` to visit your app in its default development environment and you should be greated by Ruby on Rails welcome page. Success!
 
+What does it mean to 'start a server'?
+
+It means you've told your computer to start listening for requests being made to a specific URL. In this case, the URL is localhost:3000. The 3000 is a "port". Your computer can listen for requests coming from thousands of directions, as if it was a secretary holding thousands of office phones. 3000 is one of them.
+---
 A good place to start reviewing our code base so far, in any rails app, is our application's routes.
 
 ## Route-Controller-Action Relationship (10 / 40)
@@ -197,11 +205,9 @@ So now the question is how can we dynamically generate a view for all of our dat
 
 > Means we can write abstractive code that will update and render the appropriate data for all the records in our query. Can you imagine if you were a store with 5000 products, having to write out or hard code all those listings?
 
-Lets look at [Amazon](http://amazon.com):
-- What do you think happens behind the scenes anytime some one makes a search, say for `Ruby on Rails books`?
-- What parts of search result are similar across each result?
-- What components do you notice change instance by instance?
-- How would you potential model the data you are seeing? What are a listings attributes?
+Lets use [Facebook](http:/facebook.com) as an example:
+
+Facebook has like 4 billion users. They definitely do not have 4 billion profile HTML pages lying around -- that would be a ridiculous amount of data. Instead, they have ONE HTML page lying around, and when you look at someone's profile they insert the appropriate data into the appropriate places in that HTML, and send your computer the result.
 
 ## Break (10 / 65)
 
@@ -253,11 +259,11 @@ Now when we visit `/artists` in the browser, we see a list (index) of all artist
 
 - Define `show`, and `new` controller actions for `artists`
 - Create `show`, and `new` views for `artists`
-- Display relevant info for an `artist` when you visit their `show` page
+  - Your `show` view should contain relevant info about a particular artists: such as its `name`, `nationality`, and a photo
 - When you visit the `new` page, you should see a header with `New Artist` as text for your html
 
 If you finish early:
-- Research Rails `form for` helper method and think about how you would include a form to get user input necessary to create a new artist instance and have it persist . What happens within Rails when we hit submit on the form?
+- Research Rails `form for` [helper methods](http://guides.rubyonrails.org/form_helpers.html#dealing-with-model-objects) and think about how you would include a form to get user input necessary to create a new artist instance and have it persist . What happens within Rails when we hit submit on the form?
 
 ## WE-DO: Artists Create Action (20 / 105)
 
