@@ -15,7 +15,7 @@ In our introduction to Rails, we got a quick overview of how Rails' MVC architec
 
 In this lesson, we'll go more in depth into the inner workings of a Rails App, exploring the pieces involved in a request-response lifecycle.
 
-As a quick review: **(ST-WG):** Why is the MVC structure so important?
+**(ST-WG)** As a quick review, Why is the MVC structure so important?
 ---
 
 > Interesting to note, the early MVC architects layed the foundational building blocks paving the way for the launch of GUI programming: [MVC History](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller#History)
@@ -93,15 +93,18 @@ To test that it works, try starting the server:
 rails s
 ```
 
-Then in your browser, navigate to the `http:localhost:3000` to visit your app in its default development environment and you should be greated by Ruby on Rails welcome page. Success!
+Then in your browser, navigate to the `http:localhost:3000` to visit your app in its default development environment and you should be greeted by Ruby on Rails welcome page. Success!
 
-What does it mean to 'start a server'?
+What does it mean to "start a server"?
 
-It means you've told your computer to start listening for requests being made to a specific URL. In this case, the URL is localhost:3000. The 3000 is a "port". Your computer can listen for requests coming from thousands of directions, as if it was a secretary holding thousands of office phones. 3000 is one of them.
----
+It means you've told your computer to start listening for requests being made to a specific URL. In this case, the URL is `localhost:3000`. The 3000 is a "port". Your computer can listen for requests coming from thousands of directions, as if it was a secretary holding thousands of office phones. 3000 is one of them.
+
+----
+
 A good place to start reviewing our code base so far, in any rails app, is our application's routes.
 
 ## Route-Controller-Action Relationship (10 / 40)
+
 Make sure you are in the applications directory and in your terminal run:
  `$ rake routes`
 
@@ -180,6 +183,7 @@ end
 > Rails methods defined in our controllers are known as `actions`
 
 Great let's reload:
+
 ![template_missing](images/template_missing.png)
 
 Another error... We'll get more into this later. But this one is yelling at us for not having a view(template) yet. Specifically in this case, the index view. So let's create that. Let's first make a directory and file in the terminal:
@@ -191,11 +195,10 @@ $ touch app/views/artists/index.html.erb
 
 > Note the conventions here. We needed to make an `artists` folder to put the `index.html.erb` in it. This is important because when we define an `action` in our controller, rails knows to render the view corresponding to the controller and action. In this example, because were calling the `index` action in the `artists_controller`, it'll look for the `index` view in the `artists` folder.
 
-Inside `app/views/artist/index.html.erb`:
-Just put: `<h1>All Artists</h1>`
+- Inside `app/views/artist/index.html.erb`:
+  - Just put: `<h1>All Artists</h1>`
 
 Great, now let's refresh the page and there should be no more errors so we know everything has been wired up correctly!
----
 
 However, let's think about what we really want to see when we visit this page. When we visit `/artists`, we expect to see information about all artists!
 
@@ -415,12 +418,7 @@ def create
 end
 ```
 
-However, in the browser, you get:
-
-```
-# ERROR!!!
-# ActiveModel::ForbiddenAttributesError in ArtistsController#create
-```
+However, in the browser, if we check to see if our sweet new artist was added, none of the data was persisted...
 
 Wat?! Why can't we create an `artist` using the hash available in params? This is a security feature of Rails: `params` could include extra fields that have been maliciously added to the form. This extra data could be harmful, therefore Rails requires us to whitelist fields that are allowed through form submissions.
 
