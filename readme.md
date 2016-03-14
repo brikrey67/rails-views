@@ -17,7 +17,6 @@ In this lesson, we'll go more in depth into the inner workings of a Rails App, e
 
 **(ST-WG)** As a quick review, Why is the MVC structure so important?
 
-
 > Interesting to note, the early MVC architects layed the foundational building blocks paving the way for the launch of GUI programming: [MVC History](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller#History)
 
 Today, we're going to continue the deeper dive into the why and how of "The Rails Way" for each of the major components of the MVC structure.
@@ -259,6 +258,16 @@ In our `app/views/artists/index.html.erb`
 
 Now when we visit `/artists` in the browser, we see a list (index) of all artists. We have included links to the new page, and for the show page, but we haven't created those yet so....
 
+#### Params
+
+In general, `params` values can come from the **query string of a GET request**, the **form data of a POST request**, or from the **path of the URL**.
+
+In order to access those values from Rails `params`, we just have to treat it like any other hash we want data from.
+
+> [More about Rails' Params](http://stackoverflow.com/questions/6885990/rails-params-explained)
+
+We'll talk more about params when we get to forms, and adding a new artist. For now, its important to see the connection between what values the user dynamically enters, and how we can have programmatic access to those values.
+
 ### You-Do: Show and New Actions (15 / 85)
 
 - Define `show`, and `new` controller actions for `artists`
@@ -313,7 +322,7 @@ def create
 end
  ```
 
-With this action, we want to create an instance using the params the user entered into the form, and we also set up a check  to see whether or not the model was stored in our database.
+With this action, we want to create an instance using the params the user entered into the form, and we also set up a check to see whether or not the model was stored in our database.
 
 **Note** When the request completes, we now need to worry about where to direct the user after adding a new artist.
 
@@ -413,13 +422,18 @@ That's all the data that was submitted with the form. Notice all of the artist's
 
 Update the controller to receive that param:
 
-```rb
+``` rb
 def create
   @artist = Artist.create!(params[:artist])
 end
 ```
 
-However, in the browser, if we check to see if our sweet new artist was added, none of the data was persisted...
+However, in the browser, you get:
+
+```
+# ERROR!!!
+# ActiveModel::ForbiddenAttributesError in ArtistsController#create
+```
 
 Wat?! Why can't we create an `artist` using the hash available in params? This is a security feature of Rails: `params` could include extra fields that have been maliciously added to the form. This extra data could be harmful, therefore Rails requires us to whitelist fields that are allowed through form submissions.
 
