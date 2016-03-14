@@ -80,6 +80,7 @@ After you start working on a new branch, from the terminal run:
 bundle install
 rake db:drop
 rake db:create
+rake db:migrate
 rake db:seed
 ```
 
