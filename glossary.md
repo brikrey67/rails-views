@@ -30,7 +30,7 @@
 #### `<%= some_code %>`
 > A code snippet that Ruby runs **and then** makes the result show up in your HTML, visible to your users.
 
-#### `$ rake routes`
+#### `$ rails routes`
 > A Terminal command that displays all the routes for your app.
 
 #### `render`
@@ -72,15 +72,14 @@
 #### POST
 > A type of HTTP request that is conventionally used to *send and change* data.
 
-#### index route
+#### `index` route
 > Conventional name for a route used to display multiple records of a certain class (e.g. multiple users)
 
-#### show route
+#### `show` route
 > Conventional name for a route used to display a single record of a certain class (e.g. one user)
 
-#### new route
+#### `new` route
 > Conventional name for a route used to display the `form` to create a new record of a certain class (e.g. a "Sign Up" page for users)
 
-#### edit route
+#### `edit` route
 > Conventional name for a route used to display the `form` to update an existing record of a certain class (e.g. "Edit your profile" page for users)
-

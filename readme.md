@@ -63,25 +63,25 @@ Let's dive into an example, and see MVC in action by writing some Rails code.
 
 ## Set-Up (5 / 30)
 
-The starter code for this lesson already has all the Active Record components completed, no need to add anything there, you will be building that section from scratch in another class.
+The starter code for this lesson is where we left off after the Models and Migrations class for our Tunr application. We should already have all the Active Record components completed, so no need to worry about changing the database moving forward.
 
-To get started, clone down the following repo:
+Or if you want to start fresh from a working solution, feel free to begin by cloning down the below repo and running the necessary setup.
 
 **Note**: If you have trouble setting up, please "#SlackTheBack"
 
 ```bash
-git clone git@github.com:ga-wdi-exercises/tunr_rails_models_and_migrations.git
-cd tunr_rails_models_and_migrations
-git checkout views-controllers-starter
+git clone git@github.com:ga-wdi-exercises/tunr-rails-5.git
+cd tunr-rails-5
+git checkout models-migrations-solution
 git checkout -b inclass
 ```
 After you start working on a new branch, from the terminal run:
 ```
 bundle install
-rake db:drop
-rake db:create
-rake db:migrate
-rake db:seed
+rails db:drop
+rails db:create
+rails db:migrate
+rails db:seed
 ```
 
 > Postgres troubles? Is your blue elephant running?
@@ -94,11 +94,19 @@ To test that it works, try starting the server:
 rails s
 ```
 
-Then in your browser, navigate to the `http:localhost:3000` to visit your app in its default development environment and you should be greeted by Ruby on Rails welcome page. Success!
+Then in your browser, navigate to the `http://localhost:3000` to visit your app in its default development environment. You should be greeted by Ruby on Rails welcome page!
 
-What does it mean to "start a server"?
+<details>
+<summary> **Q**. What does it mean to "start a server"?</summary>
 
+<br>
+
+```
 It means you've told your computer to start listening for requests being made to a specific URL. In this case, the URL is `localhost:3000`. The 3000 is a "port". Your computer can listen for requests coming from thousands of directions, as if it was a secretary holding thousands of office phones. 3000 is one of them.
+```
+
+</details>
+
 
 ----
 
@@ -107,7 +115,7 @@ A good place to start reviewing our code base so far, in any rails app, is our a
 ## Route-Controller-Action Relationship (10 / 40)
 
 Make sure you are in the applications directory and in your terminal run:
- `$ rake routes`
+ `$ rails routes`
 
 ```bash
 Prefix      Verb   URI Pattern                 Controller#Action
@@ -119,9 +127,9 @@ artists_new GET    /artists/new(.:format)      artists#new
             PUT    /artists/:id(.:format)      artists#update
             DELETE /artists/:id(.:format)      artists#destroy
 ```
-Rake routes allows us at any time to view the current routes of this app and see the controller actions mapped to each route.
+The command `rails routes` allows us at any time to view the current routes of our application, and to see the controller actions mapped to each route.
 
-For example, let's look at the request/response life cycle of a get request hitting the `artists` `index` action.
+For example, let's look at the request/response life cycle of a `get` request hitting the `artists` `index` action.
 
 When a user visits: `http:localhost:3000/artists`
 
@@ -187,7 +195,7 @@ Great let's reload:
 
 ![template_missing](images/template_missing.png)
 
-Another error... We'll get more into this later. But this one is yelling at us for not having a view(template) yet. Specifically in this case, the index view. So let's create that. Let's first make a directory and file in the terminal:
+Another error... We'll get more into this later. But this one is yelling at us for not having a view(template) yet. Specifically in this case, the `index` view. So let's create that. Let's first make a directory and file in the terminal:
 
 ```bash
 $ mkdir app/views/artists
@@ -323,7 +331,7 @@ def create
 end
  ```
 
-With this action, we want to create an instance using the params the user entered into the form, and we also set up a check to see whether or not the model was stored in our database.
+With this action, we want to create an instance using the params the user entered into the form.
 
 **Note** When the request completes, we now need to worry about where to direct the user after adding a new artist.
 
