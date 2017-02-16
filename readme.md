@@ -63,7 +63,7 @@ Let's dive into an example, and see MVC in action by writing some Rails code.
 
 ## Set-up (5 min)
 
-The starter code for this lesson is where we left off after the Models and Migrations class for our Tunr application. We should all start fresh from a working solution. To begin clone down the below repo and run the necessary setup.
+The starter code for this lesson is where we left off after the Models and Migrations class for our Tunr application. We should all start fresh from a working solution. To begin, clone down the below repo and run the necessary setup.
 
 **Note**: If you have trouble setting up, please "#SlackTheBack"
 
