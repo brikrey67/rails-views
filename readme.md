@@ -319,7 +319,7 @@ Great, but what happens when we try to submit this form?
 If we were looking in our browser, we would get our old friend `unknown action` error, saying:
 `The action 'create' could not be found for ArtistsController`
 
-Let's write that action for our controller and get this form to work.
+Let's write the create action for our controller and try to get this form to work.
 
 In `app/controllers/artists_controller.rb`:
 
@@ -335,7 +335,7 @@ With this action, we want to create an instance using the params the user entere
 
 **Note:** When the request completes, we now need to worry about where to direct the user after adding a new artist.
 
-### Render vs Redirect (5 / 110)
+### Render vs Redirect (5 min)
 
 Rails has variety of ways to map our applications's logic navigating a user's request to a response they care about.
 
@@ -404,14 +404,7 @@ In order to access those values from Rails `params`, we just have to treat it li
 
 > [More about Rails' Params](http://stackoverflow.com/questions/6885990/rails-params-explained)
 
-In our `artists` controller, lets place a `binding.pry` in the first line of `create` action so that we can pause our program at that point, and look around to what we have access to in `params`
-
-```ruby
-def create
-  binding.pry
-  @artist = Artist.create!(name: params[:name], nationality: params[:nationality], photo_url: params[:photo_url])
-end
-```
+Lets take a closer look at our terminal to see how the information is being passed into our terminal.
 
 If you submit the form now, and check your terminal for the value of `params`, you should see something like:
 
@@ -438,10 +431,7 @@ end
 
 However, in the browser, you get:
 
-```
-# ERROR!!!
-# ActiveModel::ForbiddenAttributesError in ArtistsController#create
-```
+![ForbiddenAttributesError](images/strongparams.png)
 
 What?! Why can't we create an `artist` using the hash available in params? This is a security feature of Rails: `params` could include extra fields that have been maliciously added to the form. This extra data could be harmful, therefore Rails requires us to whitelist fields that are allowed through form submissions.
 
