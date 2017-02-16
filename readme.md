@@ -63,9 +63,7 @@ Let's dive into an example, and see MVC in action by writing some Rails code.
 
 ## Set-up (5 min)
 
-The starter code for this lesson is where we left off after the Models and Migrations class for our Tunr application. We should already have all the Active Record components completed, so no need to worry about changing the database moving forward.
-
-Or, if you want to start fresh from a working solution, feel free to begin by cloning down the below repo and running the necessary setup.
+The starter code for this lesson is where we left off after the Models and Migrations class for our Tunr application. We should all start fresh from a working solution. To begin clone down the below repo and run the necessary setup.
 
 **Note**: If you have trouble setting up, please "#SlackTheBack"
 
@@ -82,6 +80,13 @@ rails db:drop
 rails db:create
 rails db:migrate
 rails db:seed
+```
+
+Or, to simplify..
+
+```
+bundle install
+rails db:drop db:create db:migrate db:seed
 ```
 
 > Postgres troubles? Is your elephant running?
@@ -150,7 +155,7 @@ We need to first create a controller for our artists. In your terminal:
 ```
 > **Note** the convention for naming this file: pluralize resource name, snake_case
 
-In that file, let's define our controller
+In that file, let's define our controller:
 
 ```ruby
 # in app/controllers/artists_controller.rb
@@ -233,7 +238,7 @@ The way Rails solves this problem is by extending the functionality of Ruby's **
 
 > A:  Every instance of a class has a different set of instance variables which are accessible throughout a class definition.
 
-In Rails, we use instance variables in our **controller actions**, so we can have **programmatic access to variables inside of our views**. More often than not these instance variables will contain objects from the database.
+In Rails, we use instance variables in our **controller actions**, so we can have **programmatic access to variables inside of our views**. More often than not, these instance variables will contain objects from the database.
 
 Let's use Active Record to query our database for all artists and save that to an instance variable.
 
@@ -281,7 +286,7 @@ We'll talk more about params when we get to forms, and adding a new artist. For 
 
 - Define `show`, and `new` controller actions for `artists`
 - Create `show`, and `new` views for `artists`
-  - Your `show` view should contain relevant information about a particular artist: such as its `name`, `nationality`, and a photo
+  - Your `show` view should contain relevant information about a particular artist: such as their `name`, `nationality`, and a photo
 - When you visit the `new` page, you should see a header with `New Artist` as text for your html
 
 If you finish early:
@@ -289,7 +294,7 @@ If you finish early:
 
 ## We Do: Artists Create Action (20 min)
 
-So at this point we have a way to see all artists, view info about a specific artist. Let's continue on by adding a form for the user to add their own artists to our application.
+So at this point we have a way to see all artists and view information about a specific artist. Let's continue on by adding a form for the user to add their own artists to our application.
 
 In Rails, we have access to a variety of helper methods to erase the pain of having to writing repetitive boilerplate `html` code.
 
@@ -343,7 +348,7 @@ The one way you will use the most often is a `redirect`. Using Rails `redirect_t
 
 In the example of our `create` action, we are mapping a `POST` request to this action, so all we should do is care about how to process the accompanying data, but we then need to hand off to another action to decide which response to send.
 
-Another way to control what the response will be for a particular request, is to utilize Rails `render` helper method.
+Another way to control what the response will be for a particular request is to utilize Rails `render` helper method.
 The `render` is responsible for deciding the format of the view, and which template to serve the browser.
 
 For an example, let's take a closer look at the `index` action of our Artists Controller:
