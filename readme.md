@@ -1,4 +1,4 @@
-# Views and Controllers
+# Rails Views and Controllers
 
 ## Learning Objectives
 - Describe the roles of controllers and views in a Rails application
@@ -19,11 +19,11 @@ As a quick review, Why is the MVC structure so important?
 
 > Note: The early MVC architects laid the foundational building blocks paving the way for the launch of graphical user interface (GUI) programming: [Wikipedia - MVC History](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller#History)
 
-Today, we're going to continue the deeper dive into the why and how of "The Rails Way" for each of the major components of the MVC structure.
+Today, we're going to dive deeper into the why and how of "The Rails Way" for each of the major components of the MVC structure.
 
-**Models** and migrations give us a systematic, iterable way to organize, store, retrieve, and modify a database, using ActiveRecord as an interface to map our database tables into objects in Ruby.
+**Models** and migrations give us a systematic, iterable way to organize, store, retrieve, and modify a database, using ActiveRecord as an interface (ORM) to map our database tables to objects in Ruby.
 
-Where as the models normally provide a way to encapsulate business logic and data, **Views & Controllers** are responsible for telling us what to do and how to display that data.
+Whereas the models normally provide a way to encapsulate business logic and data, **Views & Controllers** are responsible for telling us what to do and how to display that data.
 
 ### Doc Dive (5 min)
 
@@ -45,7 +45,7 @@ The design pattern that rails is built around is rMVC - Router, Model, View and 
 
 **Question:** Who can remind us the role the View plays in a Rails application?
 
-Life Cycle of a Request/Response in Rails:
+**Life Cycle of a Request/Response in Rails:**
 
 1. A user of our web application submits a request to our application's server. It can come in a number of ways - typing in a URL and hitting enter or from submitting a form on our application.
 
@@ -57,7 +57,7 @@ Life Cycle of a Request/Response in Rails:
 
 5. Once the controller has the information from the model that it needs, it sends it to the view.
 
-6. The view takes the objects from the controller, and sends a response to the user.
+6. The view takes the information from the controller, templates it, and sends a response to the user.
 
 Let's dive into an example, and see MVC in action by writing some Rails code.
 
@@ -102,7 +102,7 @@ rails s
 Then in your browser, navigate to the `http://localhost:3000` to visit your app in its default development environment. You should be greeted by Ruby on Rails welcome page!
 
 <details>
-<summary> **Q**. What does it mean to "start a server"?</summary>
+<summary><strong>Q. What does it mean to "start a server"?</strong></summary>
 
 <br>
 
@@ -290,7 +290,7 @@ We'll talk more about params when we get to forms, and adding a new artist. For 
 - When you visit the `new` page, you should see a header with `New Artist` as text for your html
 
 If you finish early:
-- Research Rails `form for` [helper methods](http://guides.rubyonrails.org/form_helpers.html#dealing-with-model-objects) and think about how you would include a form to get user input necessary to create a new artist instance and have it persist . What happens within Rails when we hit submit on the form?
+- Research Rails `form_for` [helper methods](http://guides.rubyonrails.org/form_helpers.html#dealing-with-model-objects) and think about how you would include a form to get user input necessary to create a new artist instance and have it persist . What happens within Rails when we hit submit on the form?
 
 ## We Do: Artists Create Action (20 min)
 
@@ -384,7 +384,7 @@ end
 Looking at the code for the `artists#create` method, we find this line:
 
 ```rb
-  @artist = Artist.create!(name: params[:name], nationality: params[:nationality], photo_url: params[:photo_url])
+  @artist = Artist.create!(name: params[:artist][:name], nationality: params[:artist][:nationality], photo_url: params[:artist][:photo_url])
 ```
 
 We're only submitting 3 fields so that's not so bad, but if we were submitting 50 fields that would mean we have to write a long line.
