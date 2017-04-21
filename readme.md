@@ -331,7 +331,7 @@ In `app/controllers/artists_controller.rb`:
 ```ruby
 # Artists#Create
 def create
-  @artist = Artist.create!(name: params[:name], nationality: params[:nationality], photo_url: params[:photo_url])
+  @artist = Artist.create!(name: params[:artist][:name], nationality: params[:artist][:nationality], photo_url: params[:artist][:photo_url])
   redirect_to "/artists/#{@artist.id}"
 end
  ```
