@@ -74,43 +74,49 @@ git checkout models-migrations-solution
 git checkout -b inclass
 ```
 
+
 After you start working on a new branch, from the terminal run...
 
 ```bash
-bundle install
-rails db:drop
-rails db:create
-rails db:migrate
-rails db:seed
+ $ bundle install
+ $ rails db:drop
+ $ rails db:create
+ $ rails db:migrate
+ $ rails db:seed
 ```
 
-Or, to simplify..
+> Make sure Postgres is running. (Do you see the elephant?)
 
-```
-bundle install
-rails db:drop db:create db:migrate db:seed
+Alternatively, we can run all the db commands in one statement...
+
+```bash
+ $ bundle install
+ $ rails db:drop db:create db:migrate db:seed
 ```
 
-> Postgres troubles? Is your elephant running?
+
+> You'll be running the drop, create, migrate, seed command sequence frequently. Consider adding an alias to your `.bash_profile`~
+
+
 
 Here, we are just installing our app's dependencies, and running the set up for our app's database locally.
 
-To test that it works, try starting the server:
+To test that it works, try starting the server...
 
 ```bash
-rails s
+ $ rails s
 ```
 
 Then in your browser, navigate to the `http://localhost:3000` to visit your app in its default development environment. You should be greeted by Ruby on Rails welcome page!
 
 <details>
-<summary><strong>Q. What does it mean to "start a server"?</strong></summary>
+  <summary>
+    <h5> Q. What does it mean to start a server? </h5>
+  </summary>
 
-<br>
-
-```
-It means you've told your computer to start listening for requests being made to a specific URL. In this case, the URL is `localhost:3000`. The 3000 is a "port". Your computer can listen for requests coming from thousands of directions, as if it was a secretary holding thousands of office phones. 3000 is one of them.
-```
+  <p>
+    It means a host process has started listening for requests being made to a specific URL and port. In this case, `localhost:3000`. The 3000 is a port. Your computer listens for requests coming from tens of thousands of ports.
+  <p>
 
 </details>
 
@@ -122,9 +128,14 @@ A good place to begin reviewing our code base is our application's routes.
 ## Route-Controller-Action Relationship (10 min)
 
 Make sure you are in the applications directory and in your terminal run...
- `$ rails routes`
 
 ```bash
+$ rails routes
+```
+
+You should should see some output like this...
+
+```
 Prefix      Verb   URI Pattern                 Controller#Action
     artists GET    /artists(.:format)          artists#index
 artists_new GET    /artists/new(.:format)      artists#new
@@ -134,19 +145,20 @@ artists_new GET    /artists/new(.:format)      artists#new
             PUT    /artists/:id(.:format)      artists#update
             DELETE /artists/:id(.:format)      artists#destroy
 ```
+
 The command `rails routes` allows us at any time to view the current routes of our application, and to see the controller actions mapped to each route.
 
-For example, let's look at the request/response life cycle of a `get` request hitting the `artists` `index` action.
+For example, let's look at the request/response life cycle of a `get` request hitting the `ArtistsController`'s' `index` action.
 
-When a user visits: `http:localhost:3000/artists`
+When a user visits `http:localhost:3000/artists`...
 
-- The user types in a url, which triggers a request to the server. It hits the router. The router says, "a GET request to the '/artists' path? No problem! Hey, `artists` controller, you need to perform the `index` action"
+- The user types in a url, which triggers a request to the server. It hits the router. The **router** handles a `GET` request made to the `/artists` path, then signals to the `ArtistsController` to perform its `index` action.
 
-- The `artists` controller says, "An index action? I've got one of those. Lets see, it says here I need to ask the model for information about all of the artists. Hey, ActiveRecord Model, give me that data!"
+- `ArtistsController` looks for its index action. The index method uses ActiveRecord to fetch `Artist` data and store it in an instance variable.
 
-- Thanks for all the artists, Now I'm going to send all this information to the view. The view than generates a response to the client.
+- The index view is rendered with the data (instance variables) from the controller. The view is then handed over to the client as a response.
 
-Let's write the code to make this response a reality.
+Let's implement this response!
 
 ## We Do: Define an Index Action and View (15 min)
 
@@ -198,7 +210,7 @@ end
 
 > Rails methods defined in our controllers are known as `actions`
 
-Great let's reload...
+Next, let's reload...
 
 ![template_missing](images/template_missing.png)
 
@@ -217,7 +229,7 @@ $ touch app/views/artists/index.html.erb
 <h1>All Artists</h1>
 ```
 
-Great, now let's refresh the page. There shouldn't be any more errors so we know everything has been wired up correctly!
+`$, now let's refresh the page. There shouldn't be any more errors so we know everything has been wired up correctly!
 
 
 ### Next Steps
@@ -290,7 +302,7 @@ We'll talk more about params when we get to forms, and adding a new artist. For 
 
 - Define `show`, and `new` controller actions for `artists`
 - Create `show`, and `new` views for `artists`
-  - Your `show` view should contain relevant information about a particular artist: `name`, `nationality`, and `image_url`, for instance.
+  - Your `show` view should contain relevant information about a particular artist: `name`, `nationality`, and `image_url`, for instance
 - When you visit the `new` page, you should see a header with `New Artist` as text for your html
 
 If you finish early research Rails `form_for` [helper methods](http://guides.rubyonrails.org/form_helpers.html#dealing-with-model-objects). Think about how you would utilize a form to get user input necessary to create a new artist instance and have it persist. What happens within Rails when we hit submit on the form? What routes does the request-response cycle take?
@@ -301,7 +313,7 @@ So at this point we have a way to see all artists and view information about a s
 
 In Rails, we have access to a variety of helper methods to erase the pain of having to writing repetitive boilerplate `html` code.
 
-This seems like a great time to utilize Rails `form_for` [helper method](http://guides.rubyonrails.org/form_helpers.html#dealing-with-model-objects):
+This seems like a great time to utilize Rails `form_for` [helper method](http://guides.rubyonrails.org/form_helpers.html#dealing-with-model-objects)...
 
 ```rb
 <%= form_for @artist do |f| %>
@@ -324,12 +336,12 @@ Basically, this helper with compile down to html, and the Rails will fill in the
 
 Great, but what happens when we try to submit this form?
 
-If we were looking in our browser, we would get our old friend `unknown action` error, saying:
+If we were looking in our browser, we would get our old friend `unknown action` error, saying...
 `The action 'create' could not be found for ArtistsController`
 
 Let's write the create action for our controller and try to get this form to work.
 
-In `app/controllers/artists_controller.rb`:
+In `app/controllers/artists_controller.rb`...
 
 ```ruby
 # Artists#Create
@@ -354,14 +366,14 @@ In the example of our `create` action, we are mapping a `POST` request to this a
 Another way to control what the response will be for a particular request is to utilize Rails `render` helper method.
 The `render` is responsible for deciding the format of the view, and which template to serve the browser.
 
-For an example, let's take a closer look at the `index` action of our Artists Controller:
+For an example, let's take a closer look at the `index` action of our Artists Controller...
 
 ```ruby
 def index
   @artists = Artist.all
 end
 ```
-Given what we just covered with render:
+Given what we just covered with render...
 
 **Question:** How are we able to see the artists `index` view page, when we went to our index route?
 
@@ -369,7 +381,7 @@ Given what we just covered with render:
 
 That's because Rails has implicit rendering. Basically Rails is smart enough to know if the `artists` controller action is called `index`, then it will look for the `index` view in the `artists` folder.
 
-You can explicitly change the implicit render by calling the `render` method in the action of a controller. Something like this:
+You can explicitly change the implicit render by calling the `render` method in the action of a controller. Something like this...
 
 ```ruby
 def index
@@ -384,7 +396,7 @@ end
 
 ## (I Do) Sanitization/Strong Params (10 min)
 
-Looking at the code for the `artists#create` method, we find this line:
+Looking at the code for the `artists#create` method, we find this line...
 
 ```rb
   @artist = Artist.create!(name: params[:artist][:name], nationality: params[:artist][:nationality], photo_url: params[:artist][:photo_url])
@@ -394,7 +406,7 @@ We're only submitting 3 fields so that's not so bad, but if we were submitting 5
 
 If only there was some way to not have to do that!
 
-Instead of one argument for each field in a record, `.create` can actually take one argument in total that is a hash of all the fields that should be updated. For instance:
+Instead of one argument for each field in a record, `.create` can actually take one argument in total that is a hash of all the fields that should be updated. For instance...
 
 ```rb
 @artist = Artist.create!({
