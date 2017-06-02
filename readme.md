@@ -9,7 +9,7 @@
 - Differentiate between `redirect` and  `render`
 - Use `strong_params` to protect database integrity
 
-## Framing (5 min)
+## Framing (5 min, 0:05)
 
 In our introduction to Rails, we got an overview of how Rails' MVC architecture utilizes HTTP and REST protocols to properly handle requests and responses to drive application behavior.
 
@@ -28,11 +28,11 @@ Today, we're going to dive deeper into the why and how of "The Rails Way" for ea
 **Models** and migrations give us a systematic, iterative way to modify fields and tables in our database, using Active Record an interface to translate or map our database tables to models in Ruby.
 
 
-### Doc Dive (5 min)
+### Doc Dive (5 min, 0:10)
 
 Read Parts 1-3: http://guides.rubyonrails.org/action_controller_overview.html
 
-### Turn & Talk (5 min)
+### Turn & Talk (5 min, 0:15)
 
 With a partner, discuss...
 
@@ -40,7 +40,7 @@ With a partner, discuss...
 2. What are the conventions for naming Rails controllers?
 3. What are the benefits of following the 'Rails Way'?
 
-### rMVC: Revisited (10 min)
+### rMVC: Revisited (10 min, 0:25)
 
 The design pattern that rails is built around is rMVC - Router, Model, View and Controller.
 
@@ -64,7 +64,7 @@ The design pattern that rails is built around is rMVC - Router, Model, View and 
 
 Let's dive into an example, and see MVC in action by writing some Rails code.
 
-## Set Up (5 min)
+## Set Up (5 min, 0:30)
 
 The starter code for this lesson is where we left off after the Models and Migrations class for our Tunr application. We should all start fresh from a working solution. To begin, clone down the below repo and run the necessary setup.
 
@@ -113,13 +113,13 @@ To test that it works, try starting the server...
 Then in your browser, navigate to the `http://localhost:3000` to visit your app in its default development environment. You should be greeted by Ruby on Rails welcome page!
 
 <details>
-  <summary>
-    <p><strong> Q. What does it mean to start a server? </strong></p>
-  </summary>
+<summary>
+  <strong> Q. What does it mean to start a server? </strong>
+</summary>
 
   <p>
     It means a host process has started listening for requests being made to a specific URL and port. In this case, `localhost:3000`. The 3000 is a port. Your computer listens for requests coming from tens of thousands of ports.
-  <p>
+  </p>
 
 </details>
 
@@ -128,7 +128,7 @@ Then in your browser, navigate to the `http://localhost:3000` to visit your app 
 
 A good place to begin reviewing our code base is our application's routes.
 
-## Route-Controller-Action Relationship (10 min)
+## Route-Controller-Action Relationship (10 min, 0:40)
 
 Make sure you are in the applications directory and in your terminal run...
 
@@ -163,7 +163,7 @@ When a user visits `http://localhost:3000/artists`...
 
 Let's implement this response!
 
-## We Do: Define an Index Action and View (15 min)
+## We Do: Define an Index Action and View (15 min, 0:55)
 
 We need to first create a controller for our artists. In your terminal...
 
@@ -242,9 +242,9 @@ Let's think about what we really want to see when we visit this page. When we vi
 
 Next, we'll be linking data from our **models** to our **views**, via the **controller**.
 
-## Break (10 min)
+## Break (10 min, 1:05)
 
-### Instance Variables (10 min)
+### Instance Variables (10 min, 1:15)
 
 Reviewing what we learned in our Intro to Rails class, controllers are responsible for fetching the correct data from our models. But, now we need a way to pass this data to be displayed in our views.
 
@@ -303,7 +303,7 @@ In order to access those values from Rails `params`, we just have to treat it li
 
 We'll talk more about params when we get to forms, and adding a new artist. For now, its important to see the connection between what values the user dynamically enters, and how we can have programmatic access to those values.
 
-### You Do: Show and New Actions (15 min)
+### You Do: Show and New Actions (15 min, 1:30)
 
 - Define `show`, and `new` controller actions for `artists`
 - Create `show`, and `new` views for `artists`
@@ -316,7 +316,7 @@ If you finish early...
     - What happens within Rails when we hit submit on the form?
     - What routes does the request-response cycle take?
 
-## We Do: Artists Create Action (20 min)
+## We Do: Artists Create Action (20 min, 1:50)
 
 So at this point we have a way to see all artists and view information about a specific artist. Let's continue on by adding a form for the user to add their own artists to our application.
 
@@ -363,7 +363,7 @@ With this action, we want to create an instance using the params the user entere
 
 **Note:** When the request completes, we now need to worry about where to direct the user after adding a new artist.
 
-### Render vs Redirect (5 min)
+### Render vs Redirect (5 min, 2:05)
 
 Rails has variety of ways to map our applications's logic navigating a user's request to a response they care about.
 
@@ -372,6 +372,7 @@ The one way you will use the most often is a `redirect`. Using Rails `redirect_t
 In the example of our `create` action, we are mapping a `POST` request to this action, so all we should do is care about how to process the accompanying data, but we then need to hand off to another action to decide which response to send.
 
 Another way to control what the response will be for a particular request is to utilize Rails `render` helper method.
+
 The `render` is responsible for deciding the format of the view, and which template to serve the browser.
 
 For an example, let's take a closer look at the `index` action of our Artists Controller...
@@ -382,12 +383,9 @@ def index
 end
 ```
 
-
 <details>
   <summary>
-    <p>
       <strong>How are we able to see the artists `index` view page, when we went to our index route?</strong>
-    </p>
   </summary>
   <p>
     You'll notice that we're not explicitly telling the controller which view file to render. Rails is configured to 'know' if the `artists` controller action is called `index`, then it will look for the `index` view in `views/artists`.
@@ -405,18 +403,16 @@ end
 
 <details>
   <summary>
-    <p>
-      <strong>What is the main difference between redirecting and rendering?</strong>
-    </p>
+    <strong> What is the main difference between redirecting and rendering? </strong>
   </summary>
   <p>
     A redirect will trigger a new request-response cycle.
   </p>
 </details>
 
-## Break ( 10 min)
+## Break (10 min, 2:15)
 
-## (I Do) Sanitization/Strong Params (10 min)
+## (I Do) Sanitization/Strong Params (10 min, 2:25)
 
 Looking at the code for the `artists#create` method, we find this line...
 
