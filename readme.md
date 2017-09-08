@@ -71,7 +71,7 @@ The starter code for this lesson is where we left off after the Models and Migra
 **Note**: If you have trouble setting up, please slack the supporting instructor.
 
 ```bash
-git clone git@github.com:ga-wdi-exercises/tunr-rails-5.git
+git clone git@git.generalassemb.ly:ga-wdi-exercises/tunr-rails-5.git
 cd tunr-rails-5
 git checkout models-migrations-solution
 git checkout -b inclass
@@ -538,7 +538,7 @@ Great, now we're protected against CSRF attacks!
 
 ## Homework
 
-[Scribble](http://github.com/ga-wdi-exercises/scribble) - you're going to get a lot of practice with Rails by building your first full CRUD app - your own blog!
+[Scribble](http://git.generalassemb.ly/ga-wdi-exercises/scribble) - you're going to get a lot of practice with Rails by building your first full CRUD app - your own blog!
 
 ## Resources
 - [Rails Guides: Controllers](http://guides.rubyonrails.org/action_controller_overview.html)
