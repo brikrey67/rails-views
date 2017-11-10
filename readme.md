@@ -137,13 +137,18 @@ The command `rails routes` will list all of the routes of our application and th
 Lets walk through the life-cycle of our index route.
 
 <details>
-	<summary>What happens when a user navigates to `http://localhost:3000/artists`?</summary>
-	
-	1. The request first goes to the router, which will map the request type (`GET`) and URI patter to a controller and controller action, in this case `artists#index` (where `artists` is the controller and `#index` is the action).
-	2. The router then creates an instance of our `ArtistsController` and called the `index` method (i.e. `ArtistsController.new.index`)
-	3. Inside our `index` method, we'll define an instance variable `@artists` and use Active Record to retrieve all our artists: `@artists = Artist.all`
-	4. We can then define a view that we want to render or rely on Rails' default, which would be `views/artists/index.html.erb`
-	5. Our view is rendered by our controller in to HTML that our users' browser can render. The controller sends this HTML as a response.
+  <summary>What happens when a user navigates to `http://localhost:3000/artists`?</summary>
+  1. The request first goes to the router, which will map the request type
+  (`GET`) and URI patter to a controller and controller action, in this case
+  `artists#index` (where `artists` is the controller and `#index` is the action).
+  2. The router then creates an instance of our `ArtistsController` and called
+  the `index` method (i.e. `ArtistsController.new.index`)
+  3. Inside our `index` method, we'll define an instance variable `@artists`
+  and use Active Record to retrieve all our artists: `@artists = Artist.all`
+  4. We can then define a view that we want to render or rely on Rails' default,
+  which would be `views/artists/index.html.erb`
+  5. Our view is rendered by our controller in to HTML that our users' browser
+  can render. The controller sends this HTML as a response.
 </details>
 
 ## We Do: Define an Index Action and View
@@ -236,74 +241,74 @@ Where do we define these actions? Will they all render a view?
 > The following are meant as a guide. We will be working through these together:
 
 <details>
-	<summary>How do we define a `show` action?</summary>
+  <summary>How do we define a `show` action?</summary>
 
 ```ruby
 def show
-	@artist = Artist.find(params[:id])
+  @artist = Artist.find(params[:id])
 end
 ```
 
 </details>
 
 <details>
-	<summary>How do we define a `new` action?</summary>
+  <summary>How do we define a `new` action?</summary>
 
 ```ruby
 def new
-	@artist = Artist.new
+  @artist = Artist.new
 end
 ```
 
 </details>
 
 <details>
-	<summary>How do we define a `create` action?</summary>
-	
+  <summary>How do we define a `create` action?</summary>
+
 ```ruby
 def create
   @artist = Artist.create!(name: params[:artist][:name], nationality: params[:artist][:nationality], photo_url: params[:artist][:photo_url])
-	redirect_to "/artists"
+  redirect_to "/artists"
 end
 ```
 
 </details>
 
 <details>
-	<summary>How do we define a `edit` action?</summary>
-	
+  <summary>How do we define a `edit` action?</summary>
+
 ```ruby
 def edit
-	@artist = Artist.find(params[:id])
+  @artist = Artist.find(params[:id])
 end
 ```
 
 </details>
 
 <details>
-	<summary>How do we define a `update` action?</summary>
-	
+  <summary>How do we define a `update` action?</summary>
+
 ```ruby
 def update
-	@artist = Artist.find(params[:id])
-	@artist[:nationality] = params[:artist][:nationality]
-	@artist[:name] = params[:artist][:name]
-	@artist[:photo_url] = params[:artist][:photo_url]
-	@artist.save
-	redirect_to "/artists/#{@artist.id}"
+  @artist = Artist.find(params[:id])
+  @artist[:nationality] = params[:artist][:nationality]
+  @artist[:name] = params[:artist][:name]
+  @artist[:photo_url] = params[:artist][:photo_url]
+  @artist.save
+  redirect_to "/artists/#{@artist.id}"
 end
 ```
 
 </details>
 
 <details>
-	<summary>How do we define a `destroy` action?</summary>
+  <summary>How do we define a `destroy` action?</summary>
 
 ```ruby
 def destroy
-	@artist = Artist.find(params[:id])
-	@artist.destroy
-	redirect_to "/artists"
+  @artist = Artist.find(params[:id])
+  @artist.destroy
+  redirect_to "/artists"
 end
 ```
 
@@ -326,8 +331,8 @@ Rails makes a lot of assumptions about how your views are structured, assumption
 > The following are meant as a guide, we will be working through these together in the next section:
 
 <details>
-	<summary>What will the `show.html.erb` view look like?</summary>
-	
+  <summary>What will the `show.html.erb` view look like?</summary>
+
 ```html+erb
 <h2><%= @artist.name %> <a href="/artists/<%= @artist.id %>/edit">(edit)</a></h2>
 <h4><%= @artist.nationality %></h4>
@@ -349,8 +354,8 @@ Rails makes a lot of assumptions about how your views are structured, assumption
 </details>
 
 <details>
-	<summary>What will the `new.html.erb` view look like?</summary>
-	
+  <summary>What will the `new.html.erb` view look like?</summary>
+
 ```html+erb
 <h2>New Artist</h2>
 
@@ -371,8 +376,8 @@ Rails makes a lot of assumptions about how your views are structured, assumption
 </details>
 
 <details>
-	<summary>What will the `edit.html.erb` view look like?</summary>
-	
+  <summary>What will the `edit.html.erb` view look like?</summary>
+
 ```html+erb
 <h2>Edit <%= @artist.name %></h2>
 
@@ -409,7 +414,7 @@ The way Rails solves this problem is by extending the functionality of Ruby's **
 
 ```ruby
 def index
-	@artists = Artist.all
+  @artists = Artist.all
 end
 ```
 
@@ -510,7 +515,7 @@ This seems like a great time to utilize Rails' `form_for` [helper method](http:/
 ```
 
 Here, we are saying we want a form that will result in the creation of a new instance, in this case `@artist`. In the form body, we have to make sure that our fields match the attributes of the model and we should be good to go.
- 
+
 This helper with compile down to html, and Rails will fill in the appropriate information particular to our app.
 
 Great, but what happens when we try to submit this form?
@@ -611,7 +616,7 @@ But instead of hard-coding these values, we need to get them from the `post` req
 
 Where might we get an object of our properties for our new Artist? Is there one we can reuse?
 
-Lets take a closer look at `params` in our terminal. In your `.create` method, add `puts params`. 
+Lets take a closer look at `params` in our terminal. In your `.create` method, add `puts params`.
 
 If you submit the form now, and check your terminal for the value of `params`, you should see a hash that looks something like...
 
@@ -675,7 +680,7 @@ def create
   redirect_to "/artists/#{@artist.id}"
 end
 
-#### after  
+#### after
 def create
   @artist = Artist.create!(artist_params) # strong params!
   redirect_to "/artists/#{@artist.id}"
