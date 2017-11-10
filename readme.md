@@ -138,17 +138,15 @@ Lets walk through the life-cycle of our index route.
 
 <details>
   <summary>What happens when a user navigates to `http://localhost:3000/artists`?</summary>
-  1. The request first goes to the router, which will map the request type
-  (`GET`) and URI patter to a controller and controller action, in this case
-  `artists#index` (where `artists` is the controller and `#index` is the action).
-  2. The router then creates an instance of our `ArtistsController` and called
-  the `index` method (i.e. `ArtistsController.new.index`)
-  3. Inside our `index` method, we'll define an instance variable `@artists`
-  and use Active Record to retrieve all our artists: `@artists = Artist.all`
-  4. We can then define a view that we want to render or rely on Rails' default,
-  which would be `views/artists/index.html.erb`
-  5. Our view is rendered by our controller in to HTML that our users' browser
-  can render. The controller sends this HTML as a response.
+  1. The request first goes to the router, which will map the request type (`GET`) and URI patter to a controller and controller action, in this case `artists#index` (where `artists` is the controller and `#index` is the action).
+
+  2. The router then creates an instance of our `ArtistsController` and called the `index` method (i.e. `ArtistsController.new.index`)
+
+  3. Inside our `index` method, we'll define an instance variable `@artists` and use Active Record to retrieve all our artists: `@artists = Artist.all`
+
+  4. We can then define a view that we want to render or rely on Rails' default, which would be `views/artists/index.html.erb`
+
+  5. Our view is rendered by our controller in to HTML that our users' browser can render. The controller sends this HTML as a response.
 </details>
 
 ## We Do: Define an Index Action and View
