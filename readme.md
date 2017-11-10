@@ -138,6 +138,7 @@ Lets walk through the life-cycle of our index route.
 
 <details>
   <summary>What happens when a user navigates to `http://localhost:3000/artists`?</summary>
+
   1. The request first goes to the router, which will map the request type (`GET`) and URI patter to a controller and controller action, in this case `artists#index` (where `artists` is the controller and `#index` is the action).
 
   2. The router then creates an instance of our `ArtistsController` and called the `index` method (i.e. `ArtistsController.new.index`)
