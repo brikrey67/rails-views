@@ -1,70 +1,85 @@
 # Rails Views and Controllers
 
 ## Learning Objectives
-- Describe the roles of controllers and views in a Rails application
+- Describe the role of controllers in a Rails application
+- Describe the role of views in a Rails application
 - Explain how the router directs requests to a specific controller and action
 - Explain how controller actions map to specific views
 - Describe the role of instance variables in sharing information between an action and its view
-- Describe the Rails convention for implicitly rendering a view from an action
-- Differentiate between `redirect` and  `render`
-- Use `strong_params` to protect database integrity
 
-## Framing (5 min, 0:05)
+## Framing
+(5 min)
 
-In our introduction to Rails, we got an overview of how Rails' MVC architecture utilizes HTTP and REST protocols to properly handle requests and responses to drive application behavior.
+In our Introduction to Rails, we got an overview of how Rails' MVC architecture works, utilizing HTTP and REST to properly handle requests and send responses to drive application behavior. Then, in our Models and Migrations lesson, we dove deep in to how to manage data inside of a Rails application - using migrations to control the structure of our database and models to interact with our data.
 
-In this lesson, we'll go more in depth into the inner workings of a Rails application, exploring the pieces involved in a request-response lifecycle.
+Today, we're going to dive deeper into the remaining two components of the rMVC architecture:
 
-As a quick review, Why is the MVC structure so important?
+- **Controllers** to handle business logic, preparing data to hand off to a view.
+- **Views** to manage how data is presented to the user.
 
-> Note: The early MVC architects laid the foundational building blocks paving the way for the launch of graphical user interface (GUI) programming: [Wikipedia - MVC History](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller#History)
+### rMVC: Revisited
+(5 min)
 
-Today, we're going to dive deeper into the why and how of "The Rails Way" for each of the major components of the MVC structure.
-
-  - **Models** encapsulate data, often from a database.
-  - **Controllers** handle business logic, preparing data to hand off to a particular view.
-  - **Views** manage how data is incorporated into the page displayed in the browser.
-
-**Models** and migrations give us a systematic, iterative way to modify fields and tables in our database, using Active Record an interface to translate or map our database tables to models in Ruby.
-
-
-### Doc Dive (5 min, 0:10)
-
-Read Parts 1-3: http://guides.rubyonrails.org/action_controller_overview.html
-
-### Turn & Talk (5 min, 0:15)
-
-With a partner, discuss...
-
-1. What is the role of a controller in a Rails application?
-2. What are the conventions for naming Rails controllers?
-3. What are the benefits of following the 'Rails Way'?
-
-### rMVC: Revisited (10 min, 0:25)
-
-The design pattern that rails is built around is rMVC - Router, Model, View and Controller.
+The design pattern that rails is built around is rMVC - Router, Model, View and Controller. Lets walk through each component together:
 
 ![rMVC](images/mvc_diagram.png)
 
-**Question:** Who can remind us the role the View plays in a Rails application?
+## Controllers
+(10 min)
 
-#### The Request/Response Cycle in Rails
+A request coming in to our Rails application first hits our Router. The Router then determines which Controller to pass the request off to. Our Controller receives the request and is then responsible for handling that request by finding or saving data to our model, rendering a view and sending it back to the client.
 
-1. A user of our web application submits a request to our application's server. It can come in a number of ways - typing in a URL and hitting enter or from submitting a form on our application.
+In Rails, our controllers will be defined as Ruby classes that inherit from the `ApplicationController` class. Like any Ruby class, we'll then fill it with methods. When a request comes in to our application, our Router will create a new instance of this Controller class and run the appropriate method.
 
-2. The request hits the router of the application.
+```ruby
+# routes.rb
+`Rails.application.routes.draw do
+  get    '/'                => 'books#index'
+  get    '/books'           => 'books#index'
+  get    '/books/:id'       => 'books#show', as: "book"
+  get    '/books/new'       => 'books#new', as: "new_book"
+  post   '/books'           => 'books#create'
+  get    '/books/:id/edit'  => 'books#edit', as: "edit_book"
+  put    '/books/:id'       => 'books#update'
+  delete '/books/:id'       => 'books#destroy'
+end
+```
 
-3. The application will either not recognize the route and error. Or, it will recognize the route and send it to a controller.
+```ruby
+# books_controller.rb
+class BooksController < ApplicationController
+  def index
+  end
+end
+```
 
-4. Once the request hits the controller, the controller will query the database through the model using Active Record for the information specified in the controller.
+When a user navigates to `/books`, our Router will create a new instance of our `BooksController` and call the `index` method on it.
 
-5. Once the controller has the information from the model that it needs, it sends it to the view.
+## Rails Views
+(10 min)
 
-6. The view takes the information from the controller, templates it, and sends a response to the user.
+By default, our application would render the view at `views/books/index.html.erb` in the above `BooksController`, because that is the convention and we're not telling it to do otherwise.
+
+If a user navigates to `/books/1`, we would have to define a show method:
+
+```ruby
+class BooksController < ApplicationController
+  def index
+  end
+
+  def show
+    @book = Books.find(params[:id])
+    render :show
+  end
+end
+```
+
+In our `show` method, we're creating an instance variable for a book that will be available in our `show.html.erb` template. We're also explicitly asking rails to render our `show.html.erb` template.
 
 Let's dive into an example, and see MVC in action by writing some Rails code.
 
-## Set Up (5 min, 0:30)
+## Set Up
+(5 min)
 
 The starter code for this lesson is where we left off after the Models and Migrations class for our Tunr application. We should all start fresh from a working solution. To begin, clone down the below repo and run the necessary setup.
 
@@ -73,34 +88,17 @@ The starter code for this lesson is where we left off after the Models and Migra
 ```bash
 git clone git@git.generalassemb.ly:ga-wdi-exercises/tunr-rails-5.git
 cd tunr-rails-5
-git checkout models-migrations-solution
-git checkout -b inclass
+git checkout -b views-controllers-in-class
 ```
-
 
 After you start working on a new branch, from the terminal run...
 
 ```bash
- $ bundle install
- $ rails db:drop
- $ rails db:create
- $ rails db:migrate
- $ rails db:seed
-```
-
-> Make sure Postgres is running. (Do you see the elephant?)
-
-Alternatively, we can run all the db commands in one statement...
-
-```bash
- $ bundle install
+ $ bundle install && bundle update
  $ rails db:drop db:create db:migrate db:seed
 ```
 
-
-> You'll be running the drop, create, migrate, seed command sequence frequently. Consider adding an alias to your `.bash_profile`
-
-
+> Make sure Postgres is running. (Do you see the elephant?)
 
 Here, we are just installing our app's dependencies, and running the set up for our app's database locally.
 
@@ -112,25 +110,10 @@ To test that it works, try starting the server...
 
 Then in your browser, navigate to the `http://localhost:3000` to visit your app in its default development environment. You should be greeted by Ruby on Rails welcome page!
 
-<details>
-<summary>
-  <strong> Q. What does it mean to start a server? </strong>
-</summary>
+## Route-Controller-Action Relationship
+(10 min)
 
-  <p>
-    It means a host process has started listening for requests being made to a specific URL and port. In this case, `localhost:3000`. The 3000 is a port. Your computer listens for requests coming from tens of thousands of ports.
-  </p>
-
-</details>
-
-
-----
-
-A good place to begin reviewing our code base is our application's routes.
-
-## Route-Controller-Action Relationship (10 min, 0:40)
-
-Make sure you are in the applications directory and in your terminal run...
+A good place to begin reviewing our code base is our application's routes. Make sure you are in the applications directory and in your terminal run...
 
 ```bash
 $ rails routes
@@ -149,27 +132,29 @@ artists_new GET    /artists/new(.:format)      artists#new
             DELETE /artists/:id(.:format)      artists#destroy
 ```
 
-The command `rails routes` allows us at any time to view the current routes of our application, and to see the controller actions mapped to each route.
+The command `rails routes` will list all of the routes of our application and the controller action they are mapped to.
 
-For example, let's look at the request/response life cycle of a `get` request hitting the `ArtistsController`'s `index` action.
+Lets walk through the life-cycle of our index route.
 
-When a user visits `http://localhost:3000/artists`...
+<details>
+	<summary>What happens when a user navigates to `http://localhost:3000/artists`?</summary>
+	
+	1. The request first goes to the router, which will map the request type (`GET`) and URI patter to a controller and controller action, in this case `artists#index` (where `artists` is the controller and `#index` is the action).
+	2. The router then creates an instance of our `ArtistsController` and called the `index` method (i.e. `ArtistsController.new.index`)
+	3. Inside our `index` method, we'll define an instance variable `@artists` and use Active Record to retrieve all our artists: `@artists = Artist.all`
+	4. We can then define a view that we want to render or rely on Rails' default, which would be `views/artists/index.html.erb`
+	5. Our view is rendered by our controller in to HTML that our users' browser can render. The controller sends this HTML as a response.
+</details>
 
-- The user types in a url, which triggers a request to the server. The **router** sees the `GET` request made to the `/artists` path. The router checks its routes for one that matches the request, and if it finds one, signals the appropriate controller to perform the appropriate action for that route. In this case the router signals to the `ArtistsController` to perform its `index` action.
-
-- `ArtistsController` looks for its index action. The index method uses Active Record to fetch `Artist` data and store it in an instance variable.
-
-- The index view is rendered with the data (instance variables) from the controller. The view is then handed over to the client as a response.
-
-Let's implement this response!
-
-## We Do: Define an Index Action and View (15 min, 0:55)
+## We Do: Define an Index Action and View
+(15 min)
 
 We need to first create a controller for our artists. In your terminal...
 
 ```bash
  $ touch app/controllers/artists_controller.rb
 ```
+
 > **Note**: The convention for controller filenames: pluralized resource name, snake_case.
 
 In that file, let's define our controller...
@@ -205,7 +190,6 @@ In `app/controllers/artists_controller.rb`...
 
 ```ruby
 class ArtistsController < ApplicationController
-
   def index
 
   end
@@ -235,30 +219,205 @@ Inside `app/views/artist/index.html.erb`...
 
 Now let's refresh the page. There shouldn't be any more errors so we know everything has been wired up correctly!
 
+## Controllers
+(10 min)
 
-### Next Steps
+Lets finish defining controller actions. We've defined our `index` action, that means we have these remaining actions to define:
 
-Let's think about what we really want to see when we visit this page. When we visit `/artists`, we expect to see some kind of generalized information about all artists.
+* `show`
+* `new`
+* `create`
+* `edit`
+* `update`
+* `destroy`
 
-Next, we'll be linking data from our **models** to our **views**, via the **controller**.
+Where do we define these actions? Will they all render a view?
 
-## Break (10 min, 1:05)
+> The following are meant as a guide. We will be working through these together:
 
-### Instance Variables (10 min, 1:15)
+<details>
+	<summary>How do we define a `show` action?</summary>
+
+```ruby
+def show
+	@artist = Artist.find(params[:id])
+end
+```
+
+</details>
+
+<details>
+	<summary>How do we define a `new` action?</summary>
+
+```ruby
+def new
+	@artist = Artist.new
+end
+```
+
+</details>
+
+<details>
+	<summary>How do we define a `create` action?</summary>
+	
+```ruby
+def create
+  @artist = Artist.create!(name: params[:artist][:name], nationality: params[:artist][:nationality], photo_url: params[:artist][:photo_url])
+	redirect_to "/artists"
+end
+```
+
+</details>
+
+<details>
+	<summary>How do we define a `edit` action?</summary>
+	
+```ruby
+def edit
+	@artist = Artist.find(params[:id])
+end
+```
+
+</details>
+
+<details>
+	<summary>How do we define a `update` action?</summary>
+	
+```ruby
+def update
+	@artist = Artist.find(params[:id])
+	@artist[:nationality] = params[:artist][:nationality]
+	@artist[:name] = params[:artist][:name]
+	@artist[:photo_url] = params[:artist][:photo_url]
+	@artist.save
+	redirect_to "/artists/#{@artist.id}"
+end
+```
+
+</details>
+
+<details>
+	<summary>How do we define a `destroy` action?</summary>
+
+```ruby
+def destroy
+	@artist = Artist.find(params[:id])
+	@artist.destroy
+	redirect_to "/artists"
+end
+```
+
+</details>
+
+## Break
+(10 min)
+
+## Views
+(10 min)
+
+Which controller methods from the list above need views? If you run `rails routes`, you'll notice it shows the HTTP verb with the path/url and controller and action. We need to render a view for every route that responds to a `GET` request. That means these three:
+
+* `show`
+* `new`
+* `edit`
+
+Rails makes a lot of assumptions about how your views are structured, assumptions that are closely tied to how it expects your controller will work. By default, Rails is expecting a `views/<resource>/index.html.erb` template for the `index` action of any controller (as we discussed above). Similarly, Rails is expecting a `show.html.erb`, `new.html.erb`, and `edit.html.erb` in that same directory. If we follow this convention, we don't need to explicitly tell Rails where our views are.
+
+> The following are meant as a guide, we will be working through these together in the next section:
+
+<details>
+	<summary>What will the `show.html.erb` view look like?</summary>
+	
+```html+erb
+<h2><%= @artist.name %> <a href="/artists/<%= @artist.id %>/edit">(edit)</a></h2>
+<h4><%= @artist.nationality %></h4>
+
+<img class='artist-photo' src="<%= @artist.photo_url %>">
+
+<h3>Songs</h3>
+<ul>
+  <% @artist.songs.each do |song| %>
+    <li>
+      <a href="/songs/<%= song.id %>">
+        <%= song.title %> (<%= song.album %>)
+      </a>
+    </li>
+  <% end %>
+</ul>
+```
+
+</details>
+
+<details>
+	<summary>What will the `new.html.erb` view look like?</summary>
+	
+```html+erb
+<h2>New Artist</h2>
+
+<%= form_for @artist do |f| %>
+  <%= f.label :name %>
+  <%= f.text_field :name %>
+
+  <%= f.label :nationality %>
+  <%= f.text_field :nationality %>
+
+  <%= f.label :photo_url %>
+  <%= f.text_field :photo_url %>
+
+  <%= f.submit "Create" %>
+<% end %>
+```
+
+</details>
+
+<details>
+	<summary>What will the `edit.html.erb` view look like?</summary>
+	
+```html+erb
+<h2>Edit <%= @artist.name %></h2>
+
+<%= form_for @artist, url: "/artists/#{@artist.id}", method: :put do |f| %>
+  <%= f.label :name %>
+  <%= f.text_field :name %>
+
+  <%= f.label :nationality %>
+  <%= f.text_field :nationality %>
+
+  <%= f.label :photo_url %>
+  <%= f.text_field :photo_url %>
+
+  <%= f.submit "Edit" %>
+<% end %>
+
+<%= form_for @artist, url: "/artists/#{@artist.id}", method: :delete do |f| %>
+  <% f.submit "Delete", class: "btn-delete" %>
+<% end %>
+```
+
+</details>
+
+## Finishing Up our Index action
+
+We left off with our index method defined and simply rendering an erb template with a single `<h1>`. It's very rare that we'll use our controller to just render some erb into html; more likely, we want to compose some data with our views. We do that with Instance Variables.
+
+### Instance Variables
+(10 min)
 
 Reviewing what we learned in our Intro to Rails class, controllers are responsible for fetching the correct data from our models. But, now we need a way to pass this data to be displayed in our views.
 
 The way Rails solves this problem is by extending the functionality of Ruby's **instance variables**. The **controller** makes some data available to the **view** as an **instance variable**. Our controller code will deal with storing relevant data in instance variables...
 
 ```ruby
-@artists = Artist.all
+def index
+	@artists = Artist.all
+end
 ```
 
 **Question:** Quick review, what was special about instance variables in the context of Ruby classes?
 
 > A:  Every instance of a class has a different set of instance variables which are accessible throughout a class definition.
 
-In Rails, we use instance variables in our **controller actions**, so we can have **programmatic access to variables inside of our views**. More often than not, these instance variables will contain objects from the database.
+In Rails, we use instance variables in our **controller actions**, so we can have **programmatic access to these variables inside of our views**.
 
 Let's use Active Record to query (with class method `.all`) our database for all artists and save that to an instance variable.
 
@@ -271,9 +430,9 @@ end
 
 Now, in our index view, we have programmatic access to the variable `@artists`!
 
-> It should be noted that while we practice a separation of concerns we aren't just limited to querying for only artists in the artists controller. Additionally, we can store just about anything we could have normally stored in a ruby variable.
+> You should note that we are not limited to querying for only artists in the artists controller. Additionally, we can write any valid ruby we want inside our controller methods.
 
-Let's write some code in our view to display this data.
+Let's write some code in our view to display our Artists data:
 
 In `app/views/artists/index.html.erb`...
 
@@ -295,7 +454,10 @@ Now when we visit `/artists` in the browser, we see a list (index) of all artist
 
 #### Params
 
-In general, `params` values can come from the **query string of a GET request**, the **form data of a POST request**, or from the **path of the URL**.
+There are three places we can get `params` values:
+1. The query string of a `GET` request,
+2. Form data in a `POST` request, and
+3. The path of a URL
 
 In order to access those values from Rails `params`, we just have to treat it like any other hash we want data from.
 
@@ -303,11 +465,18 @@ In order to access those values from Rails `params`, we just have to treat it li
 
 We'll talk more about params when we get to forms, and adding a new artist. For now, its important to see the connection between what values the user dynamically enters, and how we can have programmatic access to those values.
 
-### You Do: Show and New Actions (15 min, 1:30)
+### We Do: Show Actions
+(10 min)
 
-- Define `show`, and `new` controller actions for `artists`
-- Create `show`, and `new` views for `artists`
-  - Your `show` view should contain relevant information about a particular artist: `name`, `nationality`, and `image_url`, for instance
+- Lets define a `show` controller action for `artists`
+- Create a `show` view for `artists`
+- When you visit the `show` page, they should see all the relevant information about the artist.
+
+### You Do: New Actions
+(15 min)
+
+- Define a `new` controller action for `artists`
+- Create a `new` view for `artists`
 - When you visit the `new` page, you should see a header with `New Artist` as text for your html
 
 If you finish early...
@@ -316,7 +485,8 @@ If you finish early...
     - What happens within Rails when we hit submit on the form?
     - What routes does the request-response cycle take?
 
-## We Do: Artists Create Action (20 min, 1:50)
+## We Do: Artists Create Action
+(20 min)
 
 So at this point we have a way to see all artists and view information about a specific artist. Let's continue on by adding a form for the user to add their own artists to our application.
 
@@ -340,8 +510,8 @@ This seems like a great time to utilize Rails' `form_for` [helper method](http:/
 ```
 
 Here, we are saying we want a form that will result in the creation of a new instance, in this case `@artist`. In the form body, we have to make sure that our fields match the attributes of the model and we should be good to go.
-
-This helper with compile down to html, and the Rails will fill in the appropriate information particular to our app.
+ 
+This helper with compile down to html, and Rails will fill in the appropriate information particular to our app.
 
 Great, but what happens when we try to submit this form?
 
@@ -357,13 +527,14 @@ def create
   @artist = Artist.create!(name: params[:artist][:name], nationality: params[:artist][:nationality], photo_url: params[:artist][:photo_url])
   redirect_to "/artists/#{@artist.id}"
 end
- ```
+```
 
 With this action, we want to create an instance using the params the user entered into the form.
 
 **Note:** When the request completes, we now need to worry about where to direct the user after adding a new artist.
 
-### Render vs Redirect (5 min, 2:05)
+### Render vs Redirect
+(5 min)
 
 Rails has variety of ways to map our applications's logic navigating a user's request to a response they care about.
 
@@ -410,9 +581,11 @@ end
   </p>
 </details>
 
-## Break (10 min, 2:15)
+## Break
+(10 min)
 
-## (I Do) Sanitization/Strong Params (10 min, 2:25)
+## (I Do) Sanitization/Strong Params
+(10 min)
 
 Looking at the code for the `artists#create` method, we find this line...
 
@@ -436,13 +609,9 @@ Instead of one argument for each field in a record, `.create` can actually take 
 
 But instead of hard-coding these values, we need to get them from the `post` request triggered by the form submission.
 
-In general, `params` values can come from the **query string of a GET request**, the **form data of a POST request**, or from the **path of the URL**.
+Where might we get an object of our properties for our new Artist? Is there one we can reuse?
 
-In order to access those values from Rails `params`, we just have to treat it like any other hash we want data from.
-
-> [More about Rails' Params](http://stackoverflow.com/questions/6885990/rails-params-explained)
-
-Lets take a closer look at our terminal to see how the information is being passed into our terminal.
+Lets take a closer look at `params` in our terminal. In your `.create` method, add `puts params`. 
 
 If you submit the form now, and check your terminal for the value of `params`, you should see a hash that looks something like...
 
@@ -491,7 +660,7 @@ def artist_params
 end
 ```
 
-> The `require` method ensures that a specific parameter is present. Throws an error otherwise. The `permit` method returns a copy of the parameters object, returning only the permitted keys and values.
+> The `require` method ensures that a specific parameter is present. It will throw an error if the `require`d parameter is missing. The `permit` method returns a copy of the parameters object, returning only the permitted keys and values.
 
 > **Note** that we encapsulate the `artist_params` in a private method because we only want this available to this particular class and it shouldn't work outside the scope of the controller
 
@@ -515,7 +684,8 @@ end
 
 Great, now we're protected against CSRF attacks!
 
-## You Do: (15 min)
+## You Do:
+(15 min)
 
 - Define `edit`, `update` and `destroy` controller actions.
 - Create an `edit` view file.
@@ -529,7 +699,8 @@ Great, now we're protected against CSRF attacks!
 - Create a songs controller
 - Create appropriate view files
 
-## Closing (5 min)
+## Closing
+(5 min)
 
 - What is the role of the controller?
 - How do strong params protect us from malicious input?

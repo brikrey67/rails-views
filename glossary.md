@@ -3,7 +3,7 @@
 #### Controller
 > A collection of methods telling your Rails app how it should respond to each type of request.
 
-#### `< ApplicationController`
+#### `ApplicationController`
 > Every controller inherits from ApplicationController, similar to how every ActiveRecord model inherits from `ActiveRecord::Base`. The first line in any controller file will always be `class SomethingController < ApplicationController`.
 
 #### Controller method
@@ -13,10 +13,10 @@
 > Another name for controller method.
 
 #### Route
-> One of the URLs your Rails app recognizes and to which it will respond with a controller method.
+> A HTTP verb and path. In Rails, these are mapped to a controller action (in the form of `"controller#action"`).
 
 #### View
-> Something your user sees as a webpage. Usually a `.html.erb` file.
+> The presentation of data from your model (data that comes through the controller). The view is rendered in to HTML by Rails and send to the user in response to their request.
 
 #### `.html.erb`
 > Like a regular HTML file, except you can put Ruby code snippets in it.
@@ -25,13 +25,13 @@
 > Embedded Ruby -- Ruby code that's run from inside an HTML file
 
 #### `<% some_code %>`
-> aka "Clown Hats". A special sort-of-HTML-tag that tells your Rails app, "Hey, there's actually not HTML in here -- it's Ruby code." Will never be displayed to your users.
+> aka "Clown Hats". ERB syntax for executing Ruby code that is not output in to HTML.
 
 #### `<%= some_code %>`
 > A code snippet that Ruby runs **and then** makes the result show up in your HTML, visible to your users.
 
 #### `$ rails routes`
-> A Terminal command that displays all the routes for your app.
+> A Rails CLI command that displays all the routes for your app.
 
 #### `render`
 > A method that tells a controller action if it should show a `.html.erb` and if so which one, or show JSON or plain text.
@@ -46,7 +46,7 @@
 > An HTML tag that allows data to be submitted from a webpage.
 
 #### `params`
-> A hash of key/value pairs that are included with every request you make. It can include data included in a request's URL (/users/bilbo_baggins) or data submitted using a form on a webpage.
+> A hash of key/value pairs that are included with every request you make. It can include data from the request's URL (`/users/bilbo_baggins`), data from a URL query string (`?name=bilbo%20baggins`) or data submitted using a form.
 
 #### Strong params
 > A method that allows only specific key/value pairs in `params` to be sent to your controller actions, for security purposes.
