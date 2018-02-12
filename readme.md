@@ -88,7 +88,7 @@ The starter code for this lesson is where we left off after the Models and Migra
 ```bash
 git clone git@git.generalassemb.ly:ga-wdi-exercises/tunr-rails-5.git
 cd tunr-rails-5
-git checkout -b views-controllers-in-class
+git checkout -b models-migrations-solution
 ```
 
 After you start working on a new branch, from the terminal run...
