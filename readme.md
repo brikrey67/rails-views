@@ -473,8 +473,32 @@ We'll talk more about params when we get to forms, and adding a new artist. For 
 (10 min)
 
 - Lets define a `show` controller action for `artists`
+
+```ruby
+  def show
+    @artist = Artist.find(params[:id])
+  end
+```
 - Create a `show` view for `artists`
 - When you visit the `show` page, they should see all the relevant information about the artist.
+
+```html+erb
+<h2><%= @artist.name %> <a href="/artists/<%= @artist.id %>/edit">(edit)</a></h2>
+<h4><%= @artist.nationality %></h4>
+
+<img class='artist-photo' src="<%= @artist.photo_url %>">
+
+<h3>Songs</h3>
+<ul>
+  <% @artist.songs.each do |song| %>
+    <li>
+      <a href="/songs/<%= song.id %>">
+        <%= song.title %> (<%= song.album %>)
+      </a>
+    </li>
+  <% end %>
+</ul>
+```
 
 ### You Do: New Actions
 (15 min)
