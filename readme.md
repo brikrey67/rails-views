@@ -330,7 +330,7 @@ Rails makes a lot of assumptions about how your views are structured, assumption
 > The following are meant as a guide, we will be working through these together in the next section:
 
 <details>
-  <summary>What will the `show.html.erb` view look like?</summary>
+  <summary>What will the `index.html.erb` view look like?</summary>
 
 ```html+erb
 <h2><%= @artist.name %> <a href="/artists/<%= @artist.id %>/edit">(edit)</a></h2>
